@@ -157,8 +157,6 @@ const setBotCommands = async (token) => {
   await tgPost(token, 'setMyCommands', {
     commands: [
       { command: 'start', description: '🚀 Главное меню — все приложения' },
-      { command: 'profile', description: '👤 Мой профиль и баланс' },
-      { command: 'topup', description: '💎 Пополнить монеты' },
     ],
   });
 };
@@ -203,23 +201,11 @@ app.post('/webhook/telegram', (req, res) => {
   const baseUrl = 'https://api.telegram.org/bot' + token;
 
   (async () => {
-    // /start и /profile
     const msg = update.message;
     if (msg?.text) {
       const cmd = msg.text.split('@')[0];
       if (cmd === '/start') {
         await sendStartMenu(token, msg.chat.id, msg.from?.first_name);
-        return;
-      }
-      if (cmd === '/profile' || cmd === '/topup') {
-        const PROFILE_URL = process.env.APP_PROFILE_URL || process.env.BASE_URL || '';
-        if (PROFILE_URL) {
-          await tgPost(token, 'sendMessage', {
-            chat_id: msg.chat.id,
-            text: cmd === '/topup' ? '💎 Пополни монеты в профиле:' : '👤 Твой профиль:',
-            reply_markup: { inline_keyboard: [[{ text: '👤 Открыть профиль', web_app: { url: PROFILE_URL } }]] },
-          });
-        }
         return;
       }
     }
