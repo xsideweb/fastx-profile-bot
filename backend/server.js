@@ -10,7 +10,7 @@ const path = require('path');
 const { Pool } = require('pg');
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 8080;
 const BASE_URL = (process.env.BASE_URL || `http://localhost:${PORT}`).replace(/\/$/, '');
 
 const DB_URL = process.env.DATABASE_URL || process.env.database_url;
