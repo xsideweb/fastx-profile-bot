@@ -117,6 +117,42 @@ app.post('/api/invoice-link', async (req, res) => {
   }
 });
 
+// ——— Helpers ———
+const tgPost = (token, method, body) =>
+  fetch(`https://api.telegram.org/bot${token}/${method}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  }).then((r) => r.json());
+
+const setBotCommands = async (token) => {
+  await tgPost(token, 'setMyCommands', {
+    commands: [
+      { command: 'start', description: '🚀 Главное меню — все приложения' },
+      { command: 'profile', description: '👤 Мой профиль и баланс' },
+      { command: 'topup', description: '💎 Пополнить монеты' },
+    ],
+  });
+};
+
+const sendStartMenu = async (token, chatId, firstName) => {
+  const IMAGE_URL  = process.env.APP_IMAGE_URL  || '';
+  const VIDEO_URL  = process.env.APP_VIDEO_URL  || '';
+  const PROFILE_URL = process.env.APP_PROFILE_URL || process.env.BASE_URL || '';
+
+  const buttons = [];
+  if (IMAGE_URL)   buttons.push([{ text: '🖼 AI Фото',   web_app: { url: IMAGE_URL   } }]);
+  if (VIDEO_URL)   buttons.push([{ text: '🎬 AI Видео',  web_app: { url: VIDEO_URL   } }]);
+  if (PROFILE_URL) buttons.push([{ text: '👤 Профиль',   web_app: { url: PROFILE_URL } }]);
+
+  const name = firstName ? `, ${firstName}` : '';
+  await tgPost(token, 'sendMessage', {
+    chat_id: chatId,
+    text: `👋 Привет${name}!\n\nВыбери приложение:`,
+    reply_markup: { inline_keyboard: buttons },
+  });
+};
+
 // ——— POST /webhook/telegram ———
 app.post('/webhook/telegram', (req, res) => {
   const update = req.body;
@@ -126,6 +162,27 @@ app.post('/webhook/telegram', (req, res) => {
   const baseUrl = 'https://api.telegram.org/bot' + token;
 
   (async () => {
+    // /start и /profile
+    const msg = update.message;
+    if (msg?.text) {
+      const cmd = msg.text.split('@')[0];
+      if (cmd === '/start') {
+        await sendStartMenu(token, msg.chat.id, msg.from?.first_name);
+        return;
+      }
+      if (cmd === '/profile' || cmd === '/topup') {
+        const PROFILE_URL = process.env.APP_PROFILE_URL || process.env.BASE_URL || '';
+        if (PROFILE_URL) {
+          await tgPost(token, 'sendMessage', {
+            chat_id: msg.chat.id,
+            text: cmd === '/topup' ? '💎 Пополни монеты в профиле:' : '👤 Твой профиль:',
+            reply_markup: { inline_keyboard: [[{ text: '👤 Открыть профиль', web_app: { url: PROFILE_URL } }]] },
+          });
+        }
+        return;
+      }
+    }
+
     if (update.pre_checkout_query) {
       await fetch(baseUrl + '/answerPreCheckoutQuery', {
         method: 'POST',
@@ -163,6 +220,9 @@ app.post('/webhook/telegram', (req, res) => {
         .then((r) => r.json())
         .then((d) => d.ok ? console.log('Telegram webhook set') : console.warn('setWebhook:', d.description))
         .catch((e) => console.warn('setWebhook failed:', e.message));
+      setBotCommands(token)
+        .then(() => console.log('Bot commands registered'))
+        .catch((e) => console.warn('setBotCommands failed:', e.message));
     }
   });
 })();
