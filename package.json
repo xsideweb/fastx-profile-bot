@@ -1,17 +1,12 @@
 {
   "name": "fastx-profile-bot",
-  "version": "1.0.0",
-  "description": "AI Profile Bot Telegram Mini App",
-  "main": "backend/server.js",
+  "private": true,
   "scripts": {
     "start": "node backend/server.js",
-    "build": "npm install --prefix backend",
-    "dev": "node --watch backend/server.js"
+    "dev": "node --watch backend/server.js",
+    "postinstall": "cd backend && npm ci"
   },
-  "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.21.1",
-    "pg": "^8.13.1"
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
