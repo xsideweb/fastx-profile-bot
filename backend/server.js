@@ -36,6 +36,23 @@ app.get('/debug/env', (_req, res) => {
   });
 });
 
+// Ручная регистрация webhook
+app.get('/setup-webhook', async (_req, res) => {
+  const token = process.env.TELEGRAM_BOT_TOKEN || process.env.telegram_bot_token || process.env.BOT_TOKEN;
+  const baseUrl = (process.env.BASE_URL || '').replace(/\/$/, '');
+  if (!token) return res.status(503).json({ error: 'No TELEGRAM_BOT_TOKEN' });
+  if (!baseUrl.startsWith('https://')) return res.status(400).json({ error: 'BASE_URL must start with https://', BASE_URL: baseUrl });
+  try {
+    const webhookUrl = baseUrl + '/webhook/telegram';
+    const r1 = await fetch(`https://api.telegram.org/bot${token}/setWebhook?url=${encodeURIComponent(webhookUrl)}`).then(r => r.json());
+    const r2 = await setBotCommands(token);
+    const info = await fetch(`https://api.telegram.org/bot${token}/getWebhookInfo`).then(r => r.json());
+    res.json({ setWebhook: r1, setBotCommands: r2, webhookInfo: info });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 const initUserCreditsTable = async () => {
   try {
     await pool.query(`
