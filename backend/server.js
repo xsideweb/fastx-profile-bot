@@ -25,6 +25,17 @@ app.use(express.json());
 const publicDir = path.join(__dirname, '..');
 app.use(express.static(publicDir));
 
+app.get('/debug/env', (_req, res) => {
+  res.json({
+    BASE_URL: process.env.BASE_URL || null,
+    APP_IMAGE_URL: process.env.APP_IMAGE_URL || null,
+    APP_VIDEO_URL: process.env.APP_VIDEO_URL || null,
+    APP_PROFILE_URL: process.env.APP_PROFILE_URL || null,
+    REGISTER_WEBHOOK: process.env.REGISTER_WEBHOOK || null,
+    HAS_TOKEN: !!(process.env.TELEGRAM_BOT_TOKEN || process.env.BOT_TOKEN),
+  });
+});
+
 const initUserCreditsTable = async () => {
   try {
     await pool.query(`
