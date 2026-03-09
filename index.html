@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru" data-api-base="">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#1a1a2e">
+  <title>Xside AI — Профиль</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="stylesheet" href="styles.css">
+  <script>window.__APP_CONFIG__=window.__APP_CONFIG__||{apiBase:''};</script>
+</head>
+<body>
+  <div id="app" class="app">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <img src="icons/logo.png" alt="FastX logo" class="icon logo-icon">
+        <div class="logo-text-wrap">
+          <span class="logo-text">FastX</span>
+          <span class="logo-subtitle">Profile</span>
+        </div>
+      </div>
+      <div class="header-right">
+        <img src="icons/token.svg" alt="" class="icon icon-credits">
+        <span class="credits" id="credits">0</span>
+        <button type="button" id="lang-toggle" class="lang-toggle" aria-label="Language">RU</button>
+      </div>
+    </header>
+
+    <!-- Screen: Profile -->
+    <main id="screen-profile" class="screen active screen-profile">
+      <section class="profile-section">
+        <div class="profile-avatar">
+          <img src="icons/user-circle.svg" alt="" class="profile-avatar-icon">
+        </div>
+        <p id="profile-nickname" class="profile-nickname">Пользователь</p>
+        <div class="balance-title">Актуальный баланс:</div>
+        <div class="profile-balance">
+          <img src="icons/token.svg" alt="" class="icon icon-credits-inline">
+          <span id="profile-credits" class="profile-credits">0</span>
+          <span id="profile-generations-hint" class="profile-generations-hint">(≈ 0 генераций)</span>
+        </div>
+        <div class="profile-actions">
+          <button type="button" class="profile-test-btn neumorph-btn gradient-premium" id="profile-btn-test-2">
+            <img src="icons/card.svg" alt="" class="icon icon-btn-sm"> Купить токены
+          </button>
+          <button type="button" class="profile-test-btn neumorph-btn gradient-premium" id="profile-btn-topup-stars">
+            <img src="icons/star.svg" alt="" class="icon icon-btn-sm"> Пополнение через Stars
+          </button>
+          <button type="button" class="profile-test-btn neumorph-btn gradient-premium" id="profile-btn-test-3">
+            <img src="icons/bitcoin-circle.svg" alt="" class="icon icon-btn-sm"> Пополнение через криптовалюту
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <!-- Screen: Referral -->
+    <main id="screen-referral" class="screen screen-referral">
+      <section class="referral-section">
+        <div class="referral-soon-icon">🔗</div>
+        <h2 class="referral-soon-title">Реферальная программа</h2>
+        <p class="referral-soon-text">Скоро появится</p>
+        <p class="referral-soon-desc">Приглашайте друзей и получайте бонусные токены за каждого нового пользователя.</p>
+      </section>
+    </main>
+
+    <!-- Topup packs overlay -->
+    <div id="topup-packs-overlay" class="topup-packs-overlay hidden" aria-hidden="true">
+      <div class="topup-packs-backdrop"></div>
+      <div class="topup-packs-panel">
+        <h3 class="topup-packs-title">Купить монеты</h3>
+        <div id="topup-packs-list" class="topup-packs-list"></div>
+        <button type="button" class="topup-packs-close" aria-label="Закрыть">×</button>
+      </div>
+    </div>
+
+    <!-- Bottom nav -->
+    <nav class="bottom-nav">
+      <button type="button" class="nav-item active" data-screen="profile" aria-label="Профиль">
+        <span class="nav-icon"><img src="icons/user-circle.svg" alt="" class="icon icon-nav"></span>
+        <span class="nav-label">Профиль</span>
+      </button>
+      <button type="button" class="nav-item" data-screen="referral" aria-label="Рефералы">
+        <span class="nav-icon"><img src="icons/share.svg" alt="" class="icon icon-nav"></span>
+        <span class="nav-label">Рефералы</span>
+      </button>
+    </nav>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
