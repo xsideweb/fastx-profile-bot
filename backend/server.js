@@ -181,12 +181,25 @@ const sendStartMenu = async (token, chatId, firstName) => {
   });
 };
 
+// Тест: вручную отправить /start меню по chatId
+app.get('/test-start/:chatId', async (req, res) => {
+  const token = process.env.TELEGRAM_BOT_TOKEN || process.env.telegram_bot_token || process.env.BOT_TOKEN;
+  if (!token) return res.status(503).json({ error: 'No token' });
+  try {
+    await sendStartMenu(token, req.params.chatId, 'Test');
+    res.json({ ok: true });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 // ——— POST /webhook/telegram ———
 app.post('/webhook/telegram', (req, res) => {
   const update = req.body;
+  console.log('[webhook] received update:', JSON.stringify(update)?.slice(0, 300));
   if (!update || typeof update !== 'object') return res.status(200).send();
   const token = process.env.TELEGRAM_BOT_TOKEN || process.env.telegram_bot_token || process.env.BOT_TOKEN;
-  if (!token) return res.status(200).send();
+  if (!token) { console.warn('[webhook] no token'); return res.status(200).send(); }
   const baseUrl = 'https://api.telegram.org/bot' + token;
 
   (async () => {
