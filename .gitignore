@@ -4,3 +4,6 @@ backend/node_modules/
 backend/.env
 *.log
 .DS_Store
+PRICING.md
+RAILWAY_SETUP.md
+DEPLOY_CHECKLIST.md
